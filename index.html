@@ -28,7 +28,6 @@ body {
 }
 
 /* FUNDO */
-
 body::before {
     content: "";
     position: fixed;
@@ -55,7 +54,6 @@ body::after {
 }
 
 /* TELA INICIAL */
-
 .screen {
     width: 100%;
     min-height: 100vh;
@@ -122,7 +120,6 @@ h1 {
 }
 
 /* TERMINAL */
-
 .terminal {
     width: 100%;
     max-width: 850px;
@@ -215,7 +212,6 @@ h1 {
 }
 
 /* REVELAÇÃO */
-
 .reveal {
     width: 100%;
     max-width: 800px;
@@ -268,34 +264,54 @@ h1 {
 }
 
 /* CURSOR */
-
 .cursor::after {
     content: "▋";
     animation: blink 1s infinite;
 }
 
 @keyframes blink {
-    50% {
-        opacity: 0;
-    }
+    50% { opacity: 0; }
 }
 
 /* MOBILE */
-
 @media (max-width: 600px) {
-
     .terminal-body {
         padding: 18px;
         min-height: 480px;
     }
-
     h1 {
         letter-spacing: 5px;
     }
-
     .line {
         font-size: 12px;
         line-height: 1.6;
+    }
+}
+
+/* ================= GLITCH ================= */
+.glitch {
+    display: inline-block;
+    animation: glitch-anim 2.5s infinite;
+}
+
+@keyframes glitch-anim {
+    0%, 14%, 16%, 44%, 46%, 74%, 76%, 100% {
+        text-shadow: none;
+        transform: skew(0deg);
+        opacity: 1;
+    }
+    15% {
+        text-shadow: 4px 0px #ff0055, -4px 0px #00ffaa;
+        transform: skew(-15deg);
+    }
+    45% {
+        text-shadow: -3px 0px #ff0055, 3px 0px #00ffaa;
+        transform: skew(5deg);
+    }
+    75% {
+        text-shadow: 3px 3px #ff0055, -3px -3px #00ffaa;
+        transform: skew(-5deg);
+        opacity: 0.8;
     }
 }
 </style>
@@ -304,19 +320,11 @@ h1 {
 <body>
 
 <!-- ================= INTRO ================= -->
-
 <section id="intro" class="screen active">
-
     <div class="intro">
-
         <div class="lock">◉</div>
-
-        <div class="small">
-            EXPERIÊNCIA DIGITAL
-        </div>
-
+        <div class="small">EXPERIÊNCIA DIGITAL</div>
         <h1>VOCÊ ESTÁ<br>ANÔNIMO?</h1>
-
         <div class="subtitle">
             Você não digitou seu nome.<br>
             Não enviou uma foto.<br>
@@ -324,387 +332,255 @@ h1 {
             <br><br>
             Então por que este dispositivo já sabe algumas coisas?
         </div>
-
         <button class="start" onclick="startExperience()">
             ENTRAR NA EXPERIÊNCIA
         </button>
-
     </div>
-
 </section>
 
-
 <!-- ================= TERMINAL ================= -->
-
 <section id="scan" class="screen">
-
     <div class="terminal">
-
         <div class="terminal-header">
             <div class="dot"></div>
             <div class="dot"></div>
             <div class="dot"></div>
-
-            <div class="terminal-title">
-                DIGITAL ENVIRONMENT ANALYSIS
-            </div>
+            <div class="terminal-title">DIGITAL ENVIRONMENT ANALYSIS</div>
         </div>
-
         <div class="terminal-body">
-
             <div class="status">
                 <span>● SISTEMA ONLINE</span>
                 <br><br>
                 iniciando análise do ambiente digital...
             </div>
-
             <div id="discovery" class="discovery"></div>
-
             <div class="progress-container">
                 <div id="progress" class="progress"></div>
             </div>
-
         </div>
-
     </div>
-
 </section>
 
-
 <!-- ================= REVELAÇÃO ================= -->
-
 <section id="reveal" class="screen">
-
     <div class="reveal">
-
-        <div class="reveal-number">
-            ANÁLISE CONCLUÍDA
-        </div>
-
-        <h2 id="revealTitle">
-            Você não forneceu<br>seu nome.
-        </h2>
-
-        <p id="revealText">
-            Mas seu dispositivo acabou de revelar algumas informações sobre o ambiente digital em que você está.
-        </p>
-
+        <div class="reveal-number">ANÁLISE CONCLUÍDA</div>
+        <h2 id="revealTitle">Você não forneceu<br>seu nome.</h2>
+        <p id="revealText"></p>
         <div class="final" id="finalText"></div>
-
         <button class="restart" onclick="location.reload()">
             ↻ EXPERIÊNCIA NOVAMENTE
         </button>
-
     </div>
-
 </section>
 
-
 <script>
-
 /* =====================================================
    TRANSIÇÃO ENTRE TELAS
 ===================================================== */
-
 function showScreen(id) {
-
     document.querySelectorAll(".screen").forEach(screen => {
         screen.classList.remove("active");
     });
-
     document.getElementById(id).classList.add("active");
 }
 
-
 /* =====================================================
-   DETECÇÃO DE INFORMAÇÕES
-   Tudo é processado localmente.
+   DETECÇÃO DE INFORMAÇÕES LOCAIS
 ===================================================== */
-
 function getBrowser() {
-
     const ua = navigator.userAgent;
-
     if (/Edg/i.test(ua)) return "Microsoft Edge";
     if (/OPR/i.test(ua)) return "Opera";
     if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) return "Google Chrome";
     if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) return "Safari";
     if (/Firefox/i.test(ua)) return "Mozilla Firefox";
-
     return "Navegador não identificado";
 }
 
-
 function getDevice() {
-
     const ua = navigator.userAgent.toLowerCase();
-
     if (/ipad/.test(ua)) return "Tablet";
     if (/tablet/.test(ua)) return "Tablet";
     if (/iphone|android|mobile/.test(ua)) return "Smartphone";
-
     return "Computador";
 }
 
-
 function getSystem() {
-
     const ua = navigator.userAgent;
-
-    if (/iPhone|iPad|iPod/i.test(ua))
-        return "Apple iOS";
-
-    if (/Android/i.test(ua))
-        return "Android";
-
-    if (/Mac/i.test(ua))
-        return "macOS";
-
-    if (/Windows/i.test(ua))
-        return "Windows";
-
-    if (/Linux/i.test(ua))
-        return "Linux";
-
+    if (/iPhone|iPad|iPod/i.test(ua)) return "Apple iOS";
+    if (/Android/i.test(ua)) return "Android";
+    if (/Mac/i.test(ua)) return "macOS";
+    if (/Windows/i.test(ua)) return "Windows";
+    if (/Linux/i.test(ua)) return "Linux";
     return "Sistema não identificado";
 }
 
-
 function getConnection() {
-
-    const connection =
-        navigator.connection ||
-        navigator.mozConnection ||
-        navigator.webkitConnection;
-
-    if (!connection)
-        return "Informação não disponibilizada";
-
-    if (connection.effectiveType)
-        return connection.effectiveType.toUpperCase();
-
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!connection) return "Informação não disponibilizada";
+    if (connection.effectiveType) return connection.effectiveType.toUpperCase();
     return "Conectado";
 }
-
 
 /* =====================================================
    INÍCIO
 ===================================================== */
-
 function startExperience() {
-
     showScreen("scan");
-
     setTimeout(runAnalysis, 1000);
 }
 
-
 /* =====================================================
-   ANÁLISE CINEMATOGRÁFICA
+   ANÁLISE CINEMATOGRÁFICA (ASYNC)
 ===================================================== */
-
-function runAnalysis() {
-
+async function runAnalysis() {
     const discovery = document.getElementById("discovery");
     const progress = document.getElementById("progress");
 
-    const timezone =
-        Intl.DateTimeFormat().resolvedOptions().timeZone ||
-        "Não identificado";
+    // Exibe status enquanto as chamadas assíncronas são feitas
+    discovery.innerHTML = '<div class="status" style="margin-bottom: 15px; color: #506058;">[estabelecendo handshake de rede e hardware...]</div>';
 
-    const language =
-        navigator.language ||
-        "Não identificado";
+    // 1. Busca os dados da API de IP
+    let ipData = {
+        ip: "Restrito/Oculto",
+        city: "Desconhecida",
+        region: "Desconhecida",
+        isp: "Não identificado"
+    };
 
-    const screenSize =
-        window.screen.width + " × " + window.screen.height;
-
-    const orientation =
-        screen.orientation ?
-        screen.orientation.type :
-        "Não identificada";
-
-    const cookies =
-        navigator.cookieEnabled ?
-        "ATIVADOS" :
-        "DESATIVADOS";
-
-    const online =
-        navigator.onLine ?
-        "CONECTADO" :
-        "OFFLINE";
-
-    const cores =
-        navigator.hardwareConcurrency ||
-        "Não disponibilizado";
-
-    const data = [
-
-        {
-            label: "DISPOSITIVO",
-            value: getDevice()
-        },
-
-        {
-            label: "SISTEMA OPERACIONAL",
-            value: getSystem()
-        },
-
-        {
-            label: "NAVEGADOR",
-            value: getBrowser()
-        },
-
-        {
-            label: "IDIOMA",
-            value: language
-        },
-
-        {
-            label: "FUSO HORÁRIO",
-            value: timezone
-        },
-
-        {
-            label: "RESOLUÇÃO DA TELA",
-            value: screenSize
-        },
-
-        {
-            label: "ORIENTAÇÃO",
-            value: orientation
-        },
-
-        {
-            label: "COOKIES",
-            value: cookies
-        },
-
-        {
-            label: "CONEXÃO",
-            value: online
-        },
-
-        {
-            label: "TIPO DE CONEXÃO",
-            value: getConnection()
-        },
-
-        {
-            label: "NÚCLEOS DISPONIBILIZADOS",
-            value: cores
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        if (response.ok) {
+            const apiResult = await response.json();
+            ipData.ip = apiResult.ip || ipData.ip;
+            ipData.city = apiResult.city || ipData.city;
+            ipData.region = apiResult.region || ipData.region;
+            ipData.isp = apiResult.org || ipData.isp;
         }
+    } catch (error) {
+        console.warn("Rastreamento de IP bloqueado.");
+    }
 
+    // 2. Busca os dados da Bateria (se o navegador permitir)
+    let batteryInfo = "Restrito pelo Sistema";
+    if ('getBattery' in navigator) {
+        try {
+            const battery = await navigator.getBattery();
+            const level = Math.round(battery.level * 100) + "%";
+            const charging = battery.charging ? " [Conectado na tomada]" : " [Uso de bateria]";
+            batteryInfo = level + charging;
+        } catch (error) {
+            console.warn("Acesso à bateria negado.");
+        }
+    }
+
+    // Limpa o aviso de carregamento
+    discovery.innerHTML = '';
+
+    // 3. Coleta os dados locais originais
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Não identificado";
+    const language = navigator.language || "Não identificado";
+    const screenSize = window.screen.width + " × " + window.screen.height;
+    const orientation = screen.orientation ? screen.orientation.type : "Não identificada";
+    const cookies = navigator.cookieEnabled ? "ATIVADOS" : "DESATIVADOS";
+    const online = navigator.onLine ? "CONECTADO" : "OFFLINE";
+    const cores = navigator.hardwareConcurrency || "Não disponibilizado";
+
+    // 4. Monta a lista completa mesclando os dados
+    const data = [
+        { label: "ENDEREÇO IP", value: ipData.ip },
+        { label: "LOCALIZAÇÃO APROX.", value: `${ipData.city} / ${ipData.region}` },
+        { label: "PROVEDOR DE INTERNET", value: ipData.isp },
+        { label: "DISPOSITIVO", value: getDevice() },
+        { label: "SISTEMA OPERACIONAL", value: getSystem() },
+        { label: "NAVEGADOR", value: getBrowser() },
+        { label: "NÍVEL DE BATERIA", value: batteryInfo },
+        { label: "IDIOMA", value: language },
+        { label: "FUSO HORÁRIO", value: timezone },
+        { label: "RESOLUÇÃO DA TELA", value: screenSize },
+        { label: "COOKIES", value: cookies },
+        { label: "STATUS DA REDE", value: online },
+        { label: "NÚCLEOS DE PROCESSAMENTO", value: cores }
     ];
 
     let i = 0;
 
+    // 5. Inicia a animação do terminal
     function next() {
-
         if (i >= data.length) {
-
             progress.style.width = "100%";
-
-            setTimeout(showReveal, 2200);
-
+            // Envia a cidade e a bateria para a tela final
+            setTimeout(() => showReveal(ipData.city, batteryInfo), 2200);
             return;
         }
 
         const item = data[i];
-
         const div = document.createElement("div");
-
         div.className = "line";
-
         div.innerHTML =
             '<span class="prompt">></span> ' +
-            '<span class="label">' +
-            item.label +
-            ': </span>' +
-            '<span class="value">' +
-            item.value +
-            '</span>';
+            '<span class="label">' + item.label + ': </span>' +
+            '<span class="value">' + item.value + '</span>';
 
         discovery.appendChild(div);
 
-        const percentage =
-            ((i + 1) / data.length) * 100;
-
-        progress.style.width =
-            percentage + "%";
+        const percentage = ((i + 1) / data.length) * 100;
+        progress.style.width = percentage + "%";
 
         i++;
-
         setTimeout(next, 650);
     }
 
     next();
 }
 
-
 /* =====================================================
-   REVELAÇÃO FINAL
+   REVELAÇÃO FINAL (DINÂMICA COM GLITCH)
 ===================================================== */
-
-function showReveal() {
-
+function showReveal(city, battery) {
     showScreen("reveal");
 
-    const title =
-        document.getElementById("revealTitle");
+    const title = document.getElementById("revealTitle");
+    const text = document.getElementById("revealText");
+    const final = document.getElementById("finalText");
 
-    const text =
-        document.getElementById("revealText");
+    // Tela inicial da revelação
+    title.innerHTML = "Você não forneceu<br>seu nome.";
+    title.classList.remove("glitch"); // Garante que o glitch está desligado no começo
+    text.innerHTML = "Não usamos câmera.<br>Não pedimos sua senha.<br>Não precisamos saber quem você é.";
+    final.innerHTML = "";
 
-    const final =
-        document.getElementById("finalText");
-
-    title.innerHTML =
-        "Você não forneceu<br>seu nome.";
-
-    text.innerHTML =
-        "Não usamos câmera.<br>" +
-        "Não pedimos sua senha.<br>" +
-        "Não precisamos saber quem você é.";
-
+    // Quebra de expectativa e Glitch no título
     setTimeout(() => {
-
-        title.innerHTML =
-            "Mesmo assim,<br>você deixou pistas.";
-
+        title.innerHTML = "Mesmo assim,<br>você deixou rastros reais.";
+        title.classList.add("glitch");
     }, 4000);
 
+    // Mostrando os dados reais capturados
     setTimeout(() => {
+        let locationText = city !== "Desconhecida" 
+            ? `Sabemos que você acessa da região de <span style="color: #fff;">${city}</span>.` 
+            : "Seu endereço IP revelou seu provedor e rede.";
+            
+        let batteryText = battery !== "Restrito pelo Sistema" 
+            ? `<br>Sabemos que sua bateria está em <span style="color: #fff;">${battery}</span>.` 
+            : "";
 
-        text.innerHTML =
-            "Seu navegador e seu dispositivo disponibilizam informações " +
-            "sobre o ambiente em que você está.";
+        text.innerHTML = locationText + batteryText + 
+            "<br><br>Seu dispositivo entrega essas informações silenciosamente para qualquer site que você visita.";
+    }, 7500);
 
-    }, 7000);
-
+    // Conclusão 1 (com classe Glitch injetada)
     setTimeout(() => {
+        final.innerHTML = "Na era digital,<br><span class='highlight glitch'>anonimato não significa ausência de rastros.</span>";
+    }, 12500);
 
-        final.innerHTML =
-            "Na era digital,<br>" +
-            "<span class='highlight'>" +
-            "anonimato não significa ausência de rastros." +
-            "</span>";
-
-    }, 10500);
-
+    // Conclusão 2 (com classe Glitch injetada)
     setTimeout(() => {
-
-        final.innerHTML =
-            "A pergunta não é apenas<br>" +
-            "<span class='highlight'>“o que você publicou?”</span>" +
-            "<br><br>" +
-            "É também:<br>" +
-            "<span class='highlight'>“o que você revelou sem perceber?”</span>";
-
-    }, 14500);
-
+        final.innerHTML = "A pergunta não é apenas<br><span class='highlight glitch'>“o que você publicou?”</span><br><br>É também:<br><span class='highlight glitch'>“o que você revelou sem perceber?”</span>";
+    }, 17000);
 }
-
 </script>
 
 </body>
