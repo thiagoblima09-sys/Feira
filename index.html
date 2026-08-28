@@ -3,334 +3,705 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050505">
 
-<title>ESPAÇO PRIVADO</title>
+<title>VOCÊ ESTÁ ANÔNIMO?</title>
 
 <style>
 * {
     box-sizing: border-box;
 }
 
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #020303;
+    color: #e8fff1;
+    font-family: "Courier New", monospace;
+}
+
+body {
     min-height: 100vh;
-    background: #050505;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    justify-content: center;
+    overflow-x: hidden;
+}
+
+/* FUNDO */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -2;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at center,
+        transparent 20%,
+        rgba(0,0,0,.72) 100%
+    );
+    z-index: -1;
+}
+
+/* TELA INICIAL */
+
+.screen {
+    width: 100%;
+    min-height: 100vh;
+    display: none;
     align-items: center;
-    overflow: hidden;
+    justify-content: center;
+    padding: 25px;
 }
 
-.container {
-    width: 90%;
-    max-width: 650px;
+.screen.active {
+    display: flex;
+}
+
+.intro {
+    width: 100%;
+    max-width: 700px;
     text-align: center;
-    animation: aparecer 1s ease;
 }
 
-.icone {
-    font-size: 42px;
-    margin-bottom: 25px;
+.lock {
+    font-size: 50px;
+    margin-bottom: 30px;
+    filter: grayscale(1);
+}
+
+.small {
+    color: #66736b;
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
 }
 
 h1 {
-    font-size: clamp(32px, 8vw, 64px);
+    font-size: clamp(38px, 10vw, 82px);
     letter-spacing: 8px;
-    margin: 0 0 15px;
-    font-weight: 700;
+    line-height: 1;
+    margin: 0;
 }
 
-.subtitulo {
-    color: #888;
+.subtitle {
+    margin-top: 25px;
+    color: #8b9990;
+    font-family: Arial, sans-serif;
     font-size: 16px;
-    margin-bottom: 45px;
-}
-
-textarea {
-    width: 100%;
-    height: 170px;
-    resize: none;
-    background: #101010;
-    border: 1px solid #333;
-    border-radius: 14px;
-    color: white;
-    padding: 20px;
-    font-size: 17px;
-    outline: none;
-    transition: 0.3s;
-}
-
-textarea:focus {
-    border-color: white;
-    box-shadow: 0 0 30px rgba(255,255,255,0.08);
-}
-
-button {
-    margin-top: 18px;
-    width: 100%;
-    padding: 17px;
-    border: none;
-    border-radius: 12px;
-    background: white;
-    color: black;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    transform: scale(1.02);
-}
-
-.pequeno {
-    margin-top: 18px;
-    font-size: 12px;
-    color: #555;
-}
-
-.tela {
-    display: none;
-}
-
-.tela.ativa {
-    display: block;
-}
-
-.mensagem {
-    font-size: clamp(25px, 6vw, 48px);
-    line-height: 1.25;
-    font-weight: 600;
-}
-
-.carregando {
-    color: #888;
-    font-size: 18px;
-}
-
-.revelacao {
-    font-size: clamp(25px, 6vw, 48px);
-    line-height: 1.25;
-}
-
-.destaque {
-    color: white;
-}
-
-.final {
-    margin-top: 35px;
-    color: #777;
-    font-size: 15px;
     line-height: 1.7;
 }
 
-.barra {
+.start {
+    margin-top: 45px;
+    padding: 17px 35px;
+    border: 1px solid #52665a;
+    background: transparent;
+    color: #dffff0;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.start:hover {
+    background: #dffff0;
+    color: #020303;
+}
+
+/* TERMINAL */
+
+.terminal {
     width: 100%;
-    height: 2px;
-    background: #222;
-    margin-top: 30px;
-    overflow: hidden;
+    max-width: 850px;
 }
 
-.progresso {
-    width: 0%;
-    height: 100%;
-    background: white;
-    transition: width 4s linear;
+.terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 15px;
+    border: 1px solid #26332b;
+    border-bottom: none;
+    background: #080b09;
 }
 
-@keyframes aparecer {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #47534c;
+}
 
+.terminal-title {
+    margin-left: 8px;
+    color: #69756e;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.terminal-body {
+    border: 1px solid #26332b;
+    background: rgba(3,7,5,.92);
+    padding: 25px;
+    min-height: 500px;
+    box-shadow: 0 0 70px rgba(0,255,120,.035);
+}
+
+.status {
+    color: #728078;
+    font-size: 12px;
+    margin-bottom: 25px;
+}
+
+.status span {
+    color: #9affbd;
+}
+
+.discovery {
+    min-height: 320px;
+}
+
+.line {
+    margin: 14px 0;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: lineIn .6s forwards;
+}
+
+@keyframes lineIn {
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-@keyframes piscar {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+.prompt {
+    color: #506058;
 }
 
-.piscando {
-    animation: piscar 1s infinite;
+.value {
+    color: #d8ffe5;
+}
+
+.label {
+    color: #819087;
+}
+
+.progress-container {
+    height: 2px;
+    background: #182019;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0;
+    background: #b8ffce;
+    transition: width .8s ease;
+}
+
+/* REVELAÇÃO */
+
+.reveal {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.reveal-number {
+    color: #65736b;
+    font-size: 12px;
+    letter-spacing: 4px;
+    margin-bottom: 35px;
+}
+
+.reveal h2 {
+    font-family: Arial, sans-serif;
+    font-size: clamp(30px, 7vw, 65px);
+    line-height: 1.1;
+    margin: 0;
+}
+
+.reveal p {
+    margin: 35px auto 0;
+    max-width: 650px;
+    color: #8c9991;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.final {
+    margin-top: 45px;
+    color: #e5ffed;
+    font-size: clamp(20px, 4vw, 32px);
+    line-height: 1.5;
+}
+
+.highlight {
+    color: white;
+    font-weight: bold;
+}
+
+.restart {
+    margin-top: 45px;
+    padding: 12px 25px;
+    background: transparent;
+    border: 1px solid #344139;
+    color: #77857c;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+/* CURSOR */
+
+.cursor::after {
+    content: "▋";
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .terminal-body {
+        padding: 18px;
+        min-height: 480px;
+    }
+
+    h1 {
+        letter-spacing: 5px;
+    }
+
+    .line {
+        font-size: 12px;
+        line-height: 1.6;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- ================= INTRO ================= -->
 
-    <!-- TELA 1 -->
-    <div id="inicio" class="tela ativa">
+<section id="intro" class="screen active">
 
-        <div class="icone">🔒</div>
+    <div class="intro">
 
-        <h1>PRIVADO</h1>
+        <div class="lock">◉</div>
 
-        <div class="subtitulo">
-            Um espaço onde ninguém poderá ver o que você escrever.
+        <div class="small">
+            EXPERIÊNCIA DIGITAL
         </div>
 
-        <textarea
-            id="texto"
-            placeholder="Escreva algo que você nunca diria em público..."
-        ></textarea>
+        <h1>VOCÊ ESTÁ<br>ANÔNIMO?</h1>
 
-        <button onclick="enviar()">
-            ENVIAR
+        <div class="subtitle">
+            Você não digitou seu nome.<br>
+            Não enviou uma foto.<br>
+            Não contou quem você é.
+            <br><br>
+            Então por que este dispositivo já sabe algumas coisas?
+        </div>
+
+        <button class="start" onclick="startExperience()">
+            ENTRAR NA EXPERIÊNCIA
         </button>
 
-        <div class="pequeno">
-            Sua resposta será tratada como privada.
+    </div>
+
+</section>
+
+
+<!-- ================= TERMINAL ================= -->
+
+<section id="scan" class="screen">
+
+    <div class="terminal">
+
+        <div class="terminal-header">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+
+            <div class="terminal-title">
+                DIGITAL ENVIRONMENT ANALYSIS
+            </div>
+        </div>
+
+        <div class="terminal-body">
+
+            <div class="status">
+                <span>● SISTEMA ONLINE</span>
+                <br><br>
+                iniciando análise do ambiente digital...
+            </div>
+
+            <div id="discovery" class="discovery"></div>
+
+            <div class="progress-container">
+                <div id="progress" class="progress"></div>
+            </div>
+
         </div>
 
     </div>
 
+</section>
 
-    <!-- TELA 2 -->
-    <div id="processando" class="tela">
 
-        <div class="icone">◌</div>
+<!-- ================= REVELAÇÃO ================= -->
 
-        <div class="mensagem piscando">
-            Protegendo sua resposta...
+<section id="reveal" class="screen">
+
+    <div class="reveal">
+
+        <div class="reveal-number">
+            ANÁLISE CONCLUÍDA
         </div>
 
-        <div class="barra">
-            <div id="progresso" class="progresso"></div>
-        </div>
+        <h2 id="revealTitle">
+            Você não forneceu<br>seu nome.
+        </h2>
+
+        <p id="revealText">
+            Mas seu dispositivo acabou de revelar algumas informações sobre o ambiente digital em que você está.
+        </p>
+
+        <div class="final" id="finalText"></div>
+
+        <button class="restart" onclick="location.reload()">
+            ↻ EXPERIÊNCIA NOVAMENTE
+        </button>
 
     </div>
 
-
-    <!-- TELA 3 -->
-    <div id="revelacao" class="tela">
-
-        <div class="icone">◉</div>
-
-        <div class="revelacao">
-            <span id="frase"></span>
-        </div>
-
-        <div class="final" id="final"></div>
-
-    </div>
-
-</div>
+</section>
 
 
 <script>
 
-function trocarTela(atual, proxima) {
+/* =====================================================
+   TRANSIÇÃO ENTRE TELAS
+===================================================== */
 
-    document.getElementById(atual).classList.remove("ativa");
+function showScreen(id) {
 
-    setTimeout(() => {
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+    });
 
-        document.getElementById(proxima).classList.add("ativa");
-
-    }, 300);
+    document.getElementById(id).classList.add("active");
 }
 
 
-function enviar() {
+/* =====================================================
+   DETECÇÃO DE INFORMAÇÕES
+   Tudo é processado localmente.
+===================================================== */
 
-    const texto = document.getElementById("texto").value.trim();
+function getBrowser() {
 
-    if (texto === "") {
+    const ua = navigator.userAgent;
 
-        alert("Escreva alguma coisa antes de continuar.");
+    if (/Edg/i.test(ua)) return "Microsoft Edge";
+    if (/OPR/i.test(ua)) return "Opera";
+    if (/Chrome/i.test(ua) && !/Edg/i.test(ua)) return "Google Chrome";
+    if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) return "Safari";
+    if (/Firefox/i.test(ua)) return "Mozilla Firefox";
 
-        return;
+    return "Navegador não identificado";
+}
+
+
+function getDevice() {
+
+    const ua = navigator.userAgent.toLowerCase();
+
+    if (/ipad/.test(ua)) return "Tablet";
+    if (/tablet/.test(ua)) return "Tablet";
+    if (/iphone|android|mobile/.test(ua)) return "Smartphone";
+
+    return "Computador";
+}
+
+
+function getSystem() {
+
+    const ua = navigator.userAgent;
+
+    if (/iPhone|iPad|iPod/i.test(ua))
+        return "Apple iOS";
+
+    if (/Android/i.test(ua))
+        return "Android";
+
+    if (/Mac/i.test(ua))
+        return "macOS";
+
+    if (/Windows/i.test(ua))
+        return "Windows";
+
+    if (/Linux/i.test(ua))
+        return "Linux";
+
+    return "Sistema não identificado";
+}
+
+
+function getConnection() {
+
+    const connection =
+        navigator.connection ||
+        navigator.mozConnection ||
+        navigator.webkitConnection;
+
+    if (!connection)
+        return "Informação não disponibilizada";
+
+    if (connection.effectiveType)
+        return connection.effectiveType.toUpperCase();
+
+    return "Conectado";
+}
+
+
+/* =====================================================
+   INÍCIO
+===================================================== */
+
+function startExperience() {
+
+    showScreen("scan");
+
+    setTimeout(runAnalysis, 1000);
+}
+
+
+/* =====================================================
+   ANÁLISE CINEMATOGRÁFICA
+===================================================== */
+
+function runAnalysis() {
+
+    const discovery = document.getElementById("discovery");
+    const progress = document.getElementById("progress");
+
+    const timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone ||
+        "Não identificado";
+
+    const language =
+        navigator.language ||
+        "Não identificado";
+
+    const screenSize =
+        window.screen.width + " × " + window.screen.height;
+
+    const orientation =
+        screen.orientation ?
+        screen.orientation.type :
+        "Não identificada";
+
+    const cookies =
+        navigator.cookieEnabled ?
+        "ATIVADOS" :
+        "DESATIVADOS";
+
+    const online =
+        navigator.onLine ?
+        "CONECTADO" :
+        "OFFLINE";
+
+    const cores =
+        navigator.hardwareConcurrency ||
+        "Não disponibilizado";
+
+    const data = [
+
+        {
+            label: "DISPOSITIVO",
+            value: getDevice()
+        },
+
+        {
+            label: "SISTEMA OPERACIONAL",
+            value: getSystem()
+        },
+
+        {
+            label: "NAVEGADOR",
+            value: getBrowser()
+        },
+
+        {
+            label: "IDIOMA",
+            value: language
+        },
+
+        {
+            label: "FUSO HORÁRIO",
+            value: timezone
+        },
+
+        {
+            label: "RESOLUÇÃO DA TELA",
+            value: screenSize
+        },
+
+        {
+            label: "ORIENTAÇÃO",
+            value: orientation
+        },
+
+        {
+            label: "COOKIES",
+            value: cookies
+        },
+
+        {
+            label: "CONEXÃO",
+            value: online
+        },
+
+        {
+            label: "TIPO DE CONEXÃO",
+            value: getConnection()
+        },
+
+        {
+            label: "NÚCLEOS DISPONIBILIZADOS",
+            value: cores
+        }
+
+    ];
+
+    let i = 0;
+
+    function next() {
+
+        if (i >= data.length) {
+
+            progress.style.width = "100%";
+
+            setTimeout(showReveal, 2200);
+
+            return;
+        }
+
+        const item = data[i];
+
+        const div = document.createElement("div");
+
+        div.className = "line";
+
+        div.innerHTML =
+            '<span class="prompt">></span> ' +
+            '<span class="label">' +
+            item.label +
+            ': </span>' +
+            '<span class="value">' +
+            item.value +
+            '</span>';
+
+        discovery.appendChild(div);
+
+        const percentage =
+            ((i + 1) / data.length) * 100;
+
+        progress.style.width =
+            percentage + "%";
+
+        i++;
+
+        setTimeout(next, 650);
     }
 
-    trocarTela("inicio", "processando");
-
-    setTimeout(() => {
-
-        document.getElementById("progresso").style.width = "100%";
-
-    }, 100);
-
-
-    setTimeout(() => {
-
-        document.getElementById("processando").classList.remove("ativa");
-
-        document.getElementById("revelacao").classList.add("ativa");
-
-        iniciarRevelacao();
-
-    }, 4500);
+    next();
 }
 
 
-function iniciarRevelacao() {
+/* =====================================================
+   REVELAÇÃO FINAL
+===================================================== */
 
-    const frase = document.getElementById("frase");
+function showReveal() {
 
-    const final = document.getElementById("final");
+    showScreen("reveal");
 
-    frase.innerHTML = "Sua resposta está segura.";
+    const title =
+        document.getElementById("revealTitle");
 
-    setTimeout(() => {
+    const text =
+        document.getElementById("revealText");
 
-        frase.innerHTML = "Ou... está mesmo?";
+    const final =
+        document.getElementById("finalText");
 
-    }, 2200);
+    title.innerHTML =
+        "Você não forneceu<br>seu nome.";
 
-
-    setTimeout(() => {
-
-        frase.innerHTML =
-        "Você confiou em uma tela porque ela disse que era privada.";
-
-    }, 4500);
-
-
-    setTimeout(() => {
-
-        frase.innerHTML =
-        "E se alguém estivesse vendo tudo isso?";
-
-    }, 7500);
-
+    text.innerHTML =
+        "Não usamos câmera.<br>" +
+        "Não pedimos sua senha.<br>" +
+        "Não precisamos saber quem você é.";
 
     setTimeout(() => {
 
-        frase.innerHTML =
-        "É fácil abrir mão da privacidade quando acreditamos estar protegidos.";
+        title.innerHTML =
+            "Mesmo assim,<br>você deixou pistas.";
+
+    }, 4000);
+
+    setTimeout(() => {
+
+        text.innerHTML =
+            "Seu navegador e seu dispositivo disponibilizam informações " +
+            "sobre o ambiente em que você está.";
+
+    }, 7000);
+
+    setTimeout(() => {
+
+        final.innerHTML =
+            "Na era digital,<br>" +
+            "<span class='highlight'>" +
+            "anonimato não significa ausência de rastros." +
+            "</span>";
 
     }, 10500);
 
-
     setTimeout(() => {
-
-        frase.innerHTML =
-        "MAS HÁ UMA COISA QUE VOCÊ PRECISA SABER.";
-
-    }, 14000);
-
-
-    setTimeout(() => {
-
-        frase.innerHTML =
-        "Nós nunca tivemos acesso secreto à sua resposta.";
 
         final.innerHTML =
-        "A invasão nunca aconteceu.<br><br>" +
-        "Você apenas acreditou que poderia acontecer.<br><br>" +
-        "<strong>Esta é a obra.</strong>";
+            "A pergunta não é apenas<br>" +
+            "<span class='highlight'>“o que você publicou?”</span>" +
+            "<br><br>" +
+            "É também:<br>" +
+            "<span class='highlight'>“o que você revelou sem perceber?”</span>";
 
-    }, 17000);
+    }, 14500);
 
 }
 
