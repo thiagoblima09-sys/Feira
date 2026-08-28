@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ESPAÇO PRIVADO</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #050505;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 650px;
+    text-align: center;
+    animation: aparecer 1s ease;
+}
+
+.icone {
+    font-size: 42px;
+    margin-bottom: 25px;
+}
+
+h1 {
+    font-size: clamp(32px, 8vw, 64px);
+    letter-spacing: 8px;
+    margin: 0 0 15px;
+    font-weight: 700;
+}
+
+.subtitulo {
+    color: #888;
+    font-size: 16px;
+    margin-bottom: 45px;
+}
+
+textarea {
+    width: 100%;
+    height: 170px;
+    resize: none;
+    background: #101010;
+    border: 1px solid #333;
+    border-radius: 14px;
+    color: white;
+    padding: 20px;
+    font-size: 17px;
+    outline: none;
+    transition: 0.3s;
+}
+
+textarea:focus {
+    border-color: white;
+    box-shadow: 0 0 30px rgba(255,255,255,0.08);
+}
+
+button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 17px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.02);
+}
+
+.pequeno {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #555;
+}
+
+.tela {
+    display: none;
+}
+
+.tela.ativa {
+    display: block;
+}
+
+.mensagem {
+    font-size: clamp(25px, 6vw, 48px);
+    line-height: 1.25;
+    font-weight: 600;
+}
+
+.carregando {
+    color: #888;
+    font-size: 18px;
+}
+
+.revelacao {
+    font-size: clamp(25px, 6vw, 48px);
+    line-height: 1.25;
+}
+
+.destaque {
+    color: white;
+}
+
+.final {
+    margin-top: 35px;
+    color: #777;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.barra {
+    width: 100%;
+    height: 2px;
+    background: #222;
+    margin-top: 30px;
+    overflow: hidden;
+}
+
+.progresso {
+    width: 0%;
+    height: 100%;
+    background: white;
+    transition: width 4s linear;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes piscar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.piscando {
+    animation: piscar 1s infinite;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TELA 1 -->
+    <div id="inicio" class="tela ativa">
+
+        <div class="icone">🔒</div>
+
+        <h1>PRIVADO</h1>
+
+        <div class="subtitulo">
+            Um espaço onde ninguém poderá ver o que você escrever.
+        </div>
+
+        <textarea
+            id="texto"
+            placeholder="Escreva algo que você nunca diria em público..."
+        ></textarea>
+
+        <button onclick="enviar()">
+            ENVIAR
+        </button>
+
+        <div class="pequeno">
+            Sua resposta será tratada como privada.
+        </div>
+
+    </div>
+
+
+    <!-- TELA 2 -->
+    <div id="processando" class="tela">
+
+        <div class="icone">◌</div>
+
+        <div class="mensagem piscando">
+            Protegendo sua resposta...
+        </div>
+
+        <div class="barra">
+            <div id="progresso" class="progresso"></div>
+        </div>
+
+    </div>
+
+
+    <!-- TELA 3 -->
+    <div id="revelacao" class="tela">
+
+        <div class="icone">◉</div>
+
+        <div class="revelacao">
+            <span id="frase"></span>
+        </div>
+
+        <div class="final" id="final"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function trocarTela(atual, proxima) {
+
+    document.getElementById(atual).classList.remove("ativa");
+
+    setTimeout(() => {
+
+        document.getElementById(proxima).classList.add("ativa");
+
+    }, 300);
+}
+
+
+function enviar() {
+
+    const texto = document.getElementById("texto").value.trim();
+
+    if (texto === "") {
+
+        alert("Escreva alguma coisa antes de continuar.");
+
+        return;
+    }
+
+    trocarTela("inicio", "processando");
+
+    setTimeout(() => {
+
+        document.getElementById("progresso").style.width = "100%";
+
+    }, 100);
+
+
+    setTimeout(() => {
+
+        document.getElementById("processando").classList.remove("ativa");
+
+        document.getElementById("revelacao").classList.add("ativa");
+
+        iniciarRevelacao();
+
+    }, 4500);
+}
+
+
+function iniciarRevelacao() {
+
+    const frase = document.getElementById("frase");
+
+    const final = document.getElementById("final");
+
+    frase.innerHTML = "Sua resposta está segura.";
+
+    setTimeout(() => {
+
+        frase.innerHTML = "Ou... está mesmo?";
+
+    }, 2200);
+
+
+    setTimeout(() => {
+
+        frase.innerHTML =
+        "Você confiou em uma tela porque ela disse que era privada.";
+
+    }, 4500);
+
+
+    setTimeout(() => {
+
+        frase.innerHTML =
+        "E se alguém estivesse vendo tudo isso?";
+
+    }, 7500);
+
+
+    setTimeout(() => {
+
+        frase.innerHTML =
+        "É fácil abrir mão da privacidade quando acreditamos estar protegidos.";
+
+    }, 10500);
+
+
+    setTimeout(() => {
+
+        frase.innerHTML =
+        "MAS HÁ UMA COISA QUE VOCÊ PRECISA SABER.";
+
+    }, 14000);
+
+
+    setTimeout(() => {
+
+        frase.innerHTML =
+        "Nós nunca tivemos acesso secreto à sua resposta.";
+
+        final.innerHTML =
+        "A invasão nunca aconteceu.<br><br>" +
+        "Você apenas acreditou que poderia acontecer.<br><br>" +
+        "<strong>Esta é a obra.</strong>";
+
+    }, 17000);
+
+}
+
+</script>
+
+</body>
+</html>
